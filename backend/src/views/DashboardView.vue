@@ -1,4 +1,5 @@
 <script setup>
+import DashboardComponent from '../components/ContentComponents/DashboardComponent.vue';
 import PageComponent from '../components/PageComponent.vue';
 
 </script>
@@ -11,9 +12,7 @@ import PageComponent from '../components/PageComponent.vue';
         </template>
 
         <template v-slot:body>
-            <div>
-                Body
-            </div>
+            <DashboardComponent></DashboardComponent>
         </template>
         
     </PageComponent>

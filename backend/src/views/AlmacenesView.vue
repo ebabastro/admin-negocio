@@ -1,4 +1,5 @@
 <script setup>
+import ProductComponent from '../components/ContentComponents/ProductComponent.vue';
 import PageComponent from '../components/PageComponent.vue';
 
 
@@ -14,9 +15,7 @@ import PageComponent from '../components/PageComponent.vue';
         </template>
 
         <template v-slot:body>
-            <div>
-                Menu
-            </div>
+            <ProductComponent></ProductComponent>
         </template>
 
     </PageComponent>

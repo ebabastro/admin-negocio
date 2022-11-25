@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import DashboardView from "../views/DashboardView.vue";
 import AlmacenesView from "../views/AlmacenesView.vue";
 import DefaultLayout from "../components/DefaultLayout.vue";
+import ProductsView from "../views/ProductsView.vue";
+import { nextTick } from "vue";
 
 const routes = [{
     path: '/',
@@ -10,6 +12,7 @@ const routes = [{
     children: [
         { path: '/dashboard', name: 'dashboard', component: DashboardView },
         { path: '/almacenes', name: 'almacenes', component: AlmacenesView },
+        { path: '/products', name: 'products', component: ProductsView },
     ],
 }, ]
 

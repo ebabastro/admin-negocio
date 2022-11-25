@@ -11,29 +11,20 @@
 		</div>
 		<div class="mt-10 flex flex-col items-start min-w-full">
 			<router-link
-				class="flex justify-start space-x-10 items-center w-full text-lg h-12 pb-2 border-b-2"
+				class="flex justify-start space-x-10 items-center w-full text-lg h-12 pl-5 shadow-inner shadow-cyan-800/40 border-teal-900"
                   v-for="item in navigation"
                   :key="item.name"
                   :to="item.to"
-                  active-class="text-slate-50 bg-white"
+                  active-class="text-slate-50 bg-teal-500"
                   :class="[
                     this.$route.name === item.to.name
-                      ? 'border-white'
-                      : 'hover:bg-white transition delay-75 hover:scale-110 text-slate-900',
+                      ? ''
+                      : 'hover:bg-teal-400 transition delay-75 hover:scale-110 text-slate-900 bg-cyan-500',
                     'font-medium',
                   ]"
                   >
-				<div class="pl-6 flex space-x-10 items-center w-full h-full rounded-br-full bg-cyan-600"
-					:class="[
-						this.$route.name === item.to.name
-						  ? ''
-						  : 'hover:bg-cyan-600 transition delay-75',
-						'font-medium',
-					  ]">
 				  <font-awesome-icon :icon="item.icon" :alt="item.name"/>
 				  <span v-show="!collapsed">{{ item.name }}</span>
-				</div>
-				
 			</router-link>
 		</div>
 
@@ -52,8 +43,9 @@
 	import { ref } from 'vue';
 	import router from '../../router';
 	import { library } from '@fortawesome/fontawesome-svg-core'
-	import { faAngleDoubleRight, faBox, faBoxes, faBoxesPacking, faBoxesStacked, faBoxOpen, faHome, faMugSaucer, faStore, faStoreAlt } from '@fortawesome/free-solid-svg-icons'
 	import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+	import { faAngleDoubleRight, faBox, faBoxes, faBoxesPacking, faBoxesStacked, faBoxOpen, faHome, faMugSaucer, faStore, faStoreAlt } from '@fortawesome/free-solid-svg-icons'
+	
 
 	const navigation = [
 		{ name: "Inicio", to: { name: "dashboard" }, icon: "fa-solid fa-home" },
