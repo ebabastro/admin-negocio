@@ -20,7 +20,7 @@ return new class extends Migration
 
             //Foreign key subcategory
             $table->unsignedBigInteger('fk_subcategory_id');
-            $table->foreign('fk_subcategory_id')->references('id')->on('subcategories');
+            $table->foreign('fk_subcategory_id')->references('id')->on('subcategories')->onDelete('cascade');
             
             $table->timestamps();
         });
