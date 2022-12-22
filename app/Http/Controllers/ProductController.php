@@ -50,15 +50,14 @@ class ProductController extends Controller
            'message' => 'Producto eliminado con éxito',
         ]);
     }
-
-    public function edit(Request $request){
+	public function edit(Request $request){
         $product = Product::find($request->id);
-        $product->name = $request->name;
-        $product->cost = $request->cost;
-
+		$product->name = $request->name;
+		$product->cost = $request->cost;
         $product->save();
+
         return response([
            'message' => 'Producto editado con éxito',
         ]);
-    } 
+    }
 }

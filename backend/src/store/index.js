@@ -42,25 +42,19 @@ const store = createStore({
                 });
         },
         storeProduct({ commit }, newProduct) {
-            return axiosClient
-                .post("/storeProduct", newProduct)
-                .then((response) => {
-                    return response;
-                });
+            return axiosClient.post("/storeProduct", newProduct).then((response) => {
+                return response;
+            });
         },
         deleteProduct({ commit }, product) {
-            return axiosClient
-                .post("/deleteProduct", product)
-                .then((response) => {
-                    return response;
-                });
+            return axiosClient.post("/deleteProduct", product).then((response) => {
+                return response;
+            });
         },
         deleteCategory({ commit }, category) {
-            return axiosClient
-                .post("/deleteCategory", category)
-                .then((response) => {
-                    return response;
-                });
+            return axiosClient.post("/deleteCategory", category).then((response) => {
+                return response;
+            });
         },
         deleteSubcategory({ commit }, subcategory) {
             return axiosClient
@@ -70,11 +64,9 @@ const store = createStore({
                 });
         },
         editCategory({ commit }, category) {
-            return axiosClient
-                .post("/editCategory", category)
-                .then((response) => {
-                    return response;
-                });
+            return axiosClient.post("/editCategory", category).then((response) => {
+                return response;
+            });
         },
         editSubcategory({ commit }, subcategory) {
             return axiosClient
@@ -84,11 +76,9 @@ const store = createStore({
                 });
         },
         editProduct({ commit }, product) {
-            return axiosClient
-                .post("/editProduct", product)
-                .then((response) => {
-                    return response;
-                });
+            return axiosClient.post("/editProduct", product).then((response) => {
+                return response;
+            });
         },
     },
     mutations: {
@@ -109,6 +99,7 @@ const store = createStore({
         setProducts: (state, productsData) => {
             state.products = productsData;
             for (let i = 0; i < state.products.length; i++) {
+                // state.products[i].collapsed = true;
                 state.products[i].editing = false;
             }
         },

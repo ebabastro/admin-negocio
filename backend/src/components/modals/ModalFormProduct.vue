@@ -87,8 +87,7 @@
                                     $emit(
                                         'store-product',
                                         newProduct,
-                                        subcategory.id,
-                                        editing
+                                        subcategory.id
                                     )
                                 "
                                 class="bg-teal-500 py-1 px-3 rounded text-white hover:bg-teal-400 shadow shadow-teal-900/40 hover:shadow-teal-500/80 transition-all duration-200"
@@ -114,7 +113,6 @@ defineProps({
     openModal: { type: Boolean, default: false, required: true },
     newProduct: { type: Object, required: true },
     subcategory: { type: Object, required: true },
-    editing: { type: Boolean, required: true },
 });
 
 defineEmits(["close-modal", "store-product"]);

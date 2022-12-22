@@ -1,293 +1,189 @@
 <template>
-    <PageComponent>
-        <template v-slot:header>
-            Administracion
-            <!-- //añadir reload a la pagina
-		//agregar, editar, eliminar productos
-		//agregar efecto de loading -->
-        </template>
-        <template v-slot:body>
-            <div
-                class="bg-slate-300 shadow shadow-slate-500/50 p-2 h-96 flex space-x-6 relative"
-            >
-                <div
-                    class="flex flex-col justify-between items-center relative w-64 bg-slate-50 h-full shadow-inner shadow-slate-500/50 p-2 overflow-y-auto"
+  <PageComponent>
+    <template v-slot:header>
+      <div>Administracion</div>
+    </template>
+
+    <template v-slot:body>
+      <div class="h-full">
+        <ModalFormProduct
+          :newProduct = "newProduct"
+          :openModal="openModal"
+          :subcategory="selected_subcategory"
+          @close-modal="closeModal"
+          @store-product="saveProduct"
+        >
+
+        </ModalFormProduct>
+        <div class="p-1 flex space-x-3 bg-slate-300 h-full">
+
+          <div class="bg-slate-50 w-[30%] p-1 flex flex-col justify-between h-full">
+
+              <ul class="p-1 overflow-y-auto">
+                <CategoryElement
+                  v-for="category in categories"
+                  :key="category.id"
+                  :category="category"
                 >
-                    <ul class="w-full">
-                        <CategoryComponent
-                            v-for="(category, index) in categories"
-                            :key="category.id"
-                            :index="index"
-                            :element="category"
-                            @toggleCollapse="
-                                category.collapsed = !category.collapsed
-                            "
-                            @toggleEditing="editingCategory"
-                            @cancelEdit="cancelEditCategory"
-                            @doneEdit="doneEditCategory"
-                        >
-                            <ul class="ml-6">
-                                <CategoryComponent
-                                    class="bg-slate-50"
-                                    v-for="(
-                                        subcategory, index
-                                    ) in subcategories"
-                                    :key="subcategory.id"
-                                    :index="index"
-                                    :element="subcategory"
-                                    :visibility="
-                                        !category.collapsed &&
-                                        subcategory.fk_category_id ==
-                                            category.id
-                                    "
-                                    :isSubcategory="true"
-                                    @showProducts="showProducts"
-                                    @doneEdit="doneEditSubcategory"
-                                    @toggleEditing="editingSubcategory"
-                                    @cancelEdit="cancelEditSubcategory"
-                                >
-                                    <ModalError
-                                        :openModal="error.value"
-                                        @close-modal="toggleModalError"
-                                    >
-                                        <p>{{ error.message }}</p>
-                                    </ModalError>
-                                </CategoryComponent>
-                                <AgregarComponent
-                                    @agregar="addSubcategory"
-                                    v-show="!category.collapsed"
-                                    :category_id="category.id"
-                                >
-                                    Agregar Subcategoria
-                                </AgregarComponent>
-                            </ul>
-                        </CategoryComponent>
+                  <template v-slot:subcategories>
+                    <ul class="ml-6">
+                      <SubcategoryElement
+                        v-show="category.id == subcategory.fk_category_id"
+                        v-if="!category.collapsed"
+                        v-for="subcategory in subcategories"
+                        :key="subcategory.id"
+                        :subcategory="subcategory"
+                        @show="showProducts"
+                      >
+                      </SubcategoryElement>
+                    <AddButton
+                    class="my-1"
+                    v-show="!category.collapsed"
+                    :newElement="newSubcategory"
+                    @done-create="storeSubcategory(category.id)"></AddButton>
                     </ul>
-                    <AgregarComponent @agregar="addCategory"
-                        >Agregar Categoria</AgregarComponent
-                    >
-
-                    <ModalError
-                        :openModal="error.error"
-                        @close-modal="toggleModalError"
-                    >
-                        <p>{{ error.message }}</p>
-                    </ModalError>
-                </div>
-                <ProductsComponent
-                    :products="products"
-                    :subcategory_id="selected_subcategory.id"
-                    @addProduct="addProduct"
-                    @showModalForm="openModalForm"
-                    @editModalForm="editModalForm"
-                    @deleteProduct="deleteProduct"
-                >
-                    <ModalFormProduct
-                        :editing="editingProduct"
-                        :subcategory="selected_subcategory"
-                        :newProduct="toAddProduct"
-                        :openModal="modalActive"
-                        @close-modal="closeModalForm"
-                        @store-product="addProduct"
-                    ></ModalFormProduct>
-                </ProductsComponent>
-
-                <!-- <pre>{{ toAddProduct }}</pre> -->
+                  </template>
+                </CategoryElement>
+              </ul>
+              <AddButton :newElement="newCategory" @done-create="storeCategory"></AddButton>
             </div>
-        </template>
-    </PageComponent>
+            <div class="bg-slate-50 w-full p-2 h-full">
+              <h1 v-show="selected_subcategory.id" class="text-3xl text-center bg-green-500 rounded mb-1 p-1">{{selected_subcategory.name}}</h1>
+              <div class="w-full flex flex-col items-center justify-between">
+
+              <table v-show="selected_subcategory.id" class="w-full border-2 border-black">
+                <tr class="bg-slate-200 text-left">
+                  <th class="border border-black w-[10%]">ID</th>
+                  <th class="border border-black w-[60%]">Nombre</th>
+                  <th class="border border-black w-[20%]">Costo</th>
+                  <th class="border border-black w-[5%]"></th>
+                  <th class="border border-black w-[5%]"></th>
+                </tr>
+                  <ProductElement
+                    v-for="product in products"
+                    :key="product.id"
+                    :product="product"
+                    v-show="selected_subcategory.id == product.fk_subcategory_id"
+                    @edit-product="editProduct"
+                    @delete-product="deleteProduct"
+                  >
+
+                  </ProductElement>
+                </table>
+                <div v-if="selected_subcategory.id" class="mt-1">
+                  <AddProduct @open-modal="addProduct"></AddProduct>
+                </div>
+            </div>
+            </div>
+        </div>
+      </div>
+  </template>
+  </PageComponent>
+
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import ModalFormProduct from "../components/modals/ModalFormProduct.vue";
-import PageComponent from "../components/PageComponent.vue";
-import CategoryComponent from "../components/administration/CategoryComponent.vue";
-import ProductsComponent from "../components/administration/ProductsComponent.vue";
-import AgregarComponent from "../components/administration/AgregarComponent.vue";
-import { onBeforeMount } from "@vue/runtime-core";
+import {ref, computed} from "vue";
+import {onBeforeMount} from "@vue/runtime-core";
 import store from "../store";
-import ModalError from "../components/modals/ModalError.vue";
+import PageComponent from "../components/PageComponent.vue";
+import CategoryElement from "../components/list/CategoryElement.vue";
+import SubcategoryElement from "../components/list/SubcategoryElement.vue";
+import ProductElement from "../components/list/ProductElement.vue";
+import AddButton from "../components/buttons/AddButton.vue";
+import AddProduct from "../components/buttons/AddProduct.vue";
+import ModalFormProduct from "../components/modals/ModalFormProduct.vue";
 
-onBeforeMount(() => {
-    store.dispatch("getCategories");
-    store.dispatch("getSubcategories");
-    store.dispatch("getProducts");
-});
-// Controlar abrir/cerrar modales de error
+onBeforeMount(()=>{
+  store.dispatch('getCategories');
+  store.dispatch('getSubcategories');
+  store.dispatch('getProducts');
+})
 
-const toggleModalError = () => {
-    error.value.error = !error.value.error;
-};
-
-const error = ref({
-    error: false,
-    message: "",
-});
-
-// Controlar abrir/cerrar modal de formulario
-const editingProduct = ref(false);
-const modalActive = ref(false);
-function editModalForm(product) {
-    modalActive.value = true;
-    toAddProduct.value.id = product.id;
-    toAddProduct.value.name = product.name;
-    toAddProduct.value.cost = product.cost;
-    editingProduct.value = true;
-}
-function openModalForm() {
-    modalActive.value = true;
-}
-const closeModalForm = () => {
-    modalActive.value = false;
-    toAddProduct.value.name = "";
-    toAddProduct.value.cost = 0;
-};
-
-const categories = computed(() => store.state.categories);
-const subcategories = computed(() => store.state.subcategories);
-const products = computed(() => store.state.products);
-
-// Añadir controladores de colapso/edicion a los arrays
-
-// Function de edition de categoria
-function editingCategory(index) {
-    cacheBeforeEditing.value = categories.value[index].name;
-    categories.value[index].editing = true;
-}
-
-// Cancelar edicion de todos los elementos
-const cacheBeforeEditing = ref();
-function cancelEditCategory(index) {
-    categories.value[index].name = cacheBeforeEditing.value;
-    for (var i = 0; i < categories.value.length; i++) {
-        categories.value[i].editing = false;
-    }
-}
-
-// Editada la categoria
-function doneEditCategory(category) {
-    if (category.name) {
-        store.dispatch("editCategory", category).then(() => {
-            store.dispatch("getCategories");
-        });
-        for (var i = 0; i < categories.value.length; i++) {
-            categories.value[i].editing = false;
-        }
-    } else {
-        store.dispatch("deleteCategory", category);
-        categories.value.splice(categories.value.indexOf(category), 1);
-        for (var i = 0; i < categories.value.length; i++) {
-            categories.value[i].editing = false;
-        }
-    }
-}
-
-// Mostrar productos
-const selected_subcategory = ref({});
-function showProducts(subcategory, index) {
-    selected_subcategory.value = subcategory;
-    for (var i = 0; i < subcategories.value.length; i++) {
-        subcategories.value[i].collapsed = true;
-    }
-    subcategories.value[index].collapsed = false;
-}
-
-// Agregar categoria
 const newCategory = ref({
-    name: "",
-});
-function addCategory(name) {
-    newCategory.value.name = name;
-    store
-        .dispatch("storeCategory", newCategory.value)
-        .then(() => {
-            store.dispatch("getCategories");
-        })
-        .catch((err) => {
-            error.value.error = true;
-            error.value.message = err.response.data.message;
-        });
-}
-
-// Agregar subcategoria
+  name: "",
+})
 const newSubcategory = ref({
-    fk_category_id: "",
-    name: "",
-});
-function addSubcategory(name, category_id) {
-    newSubcategory.value.fk_category_id = category_id;
-    newSubcategory.value.name = name;
-    store
-        .dispatch("storeSubcategory", newSubcategory.value)
-        .then(() => {
-            store.dispatch("getSubcategories");
-        })
-        .catch((err) => {
-            error.value.error = true;
-            error.value.message = err.response.data.message;
-        });
+  name: "",
+  fk_category_id: "",
+})
+const newProduct = ref({
+  id: "",
+  name: "",
+  fk_subcategory_id: "",
+  cost: 0,
+})
+
+const categories = computed(()=>store.state.categories);
+const subcategories = computed(()=>store.state.subcategories);
+const products = computed(()=>store.state.products);
+
+const selected_subcategory = ref({});
+function showProducts(subcategory){
+
+  for (var i = 0; i < subcategories.value.length; i++) {
+    subcategories.value[i].collapsed = true;
+  }
+  subcategory.collapsed = false;
+  selected_subcategory.value = subcategory;
 }
 
-// Editando la subcategoria
-function editingSubcategory(index) {
-    cacheBeforeEditing.value = subcategories.value[index].name;
-    subcategories.value[index].editing = true;
+function storeCategory(){
+  store.dispatch('storeCategory', newCategory.value).then(()=>{
+    store.dispatch('getCategories');
+  });
+  newCategory.value.name = "";
 }
 
-// Cancelando la edicion de subcategoria
-function cancelEditSubcategory(index) {
-    subcategories.value[index].name = cacheBeforeEditing.value;
-    for (var i = 0; i < subcategories.value.length; i++) {
-        subcategories.value[i].editing = false;
-    }
+function storeSubcategory(category_id){
+  newSubcategory.value.fk_category_id = category_id;
+  store.dispatch('storeSubcategory', newSubcategory.value).then(()=>{
+    store.dispatch('getSubcategories');
+  })
+  newSubcategory.value.name = "";
+  newSubcategory.value.fk_category_id = "";
+}
+const editing = ref(false);
+function saveProduct(){
+  if(editing.value){
+    store.dispatch('editProduct', newProduct.value).then(()=>{
+      store.dispatch('getProducts');
+    })
+  }
+  else{
+    store.dispatch('storeProduct', newProduct.value).then(()=>{
+      store.dispatch('getProducts');
+    })
+  }
+  openModal.value = false;
+  newProduct.value.name = "";
+  newProduct.value.cost = 0;
+}
+function editProduct(product){
+  newProduct.value.id = product.id;
+  newProduct.value.name = product.name;
+  newProduct.value.cost = product.cost;
+  newProduct.value.fk_subcategory_id = selected_subcategory.value.id;
+  openModal.value = true;
+  editing.value = true;
+}
+function deleteProduct(product){
+  store.dispatch('deleteProduct', product).then(()=>{
+    store.dispatch('getProducts');
+  })
 }
 
-// Editada la subcategoria
-function doneEditSubcategory(subcategory) {
-    if (subcategory.name) {
-        store.dispatch("editSubcategory", subcategory).then(() => {
-            store.dispatch("getSubcategories");
-        });
-        for (var i = 0; i < subcategories.value.length; i++) {
-            subcategories.value[i].editing = false;
-        }
-    } else {
-        store.dispatch("deleteSubcategory", subcategory);
-        subcategories.value.splice(subcategories.value.indexOf(subcategory), 1);
-        for (var i = 0; i < subcategories.value.length; i++) {
-            subcategories.value[i].editing = false;
-        }
-    }
+const openModal = ref(false);
+function addProduct(){
+  newProduct.value.name = "";
+  newProduct.value.cost = "";
+  newProduct.value.fk_subcategory_id = selected_subcategory.value.id;
+  editing.value = false;
+  openModal.value = true;
 }
-
-// Agregar producto
-const toAddProduct = ref({
-    id: "",
-    name: "",
-    cost: 0,
-    fk_subcategory_id: "",
-});
-function addProduct(newProduct, subcategory_id, editing) {
-    toAddProduct.value.name = newProduct.name;
-    toAddProduct.value.cost = newProduct.cost;
-    toAddProduct.value.fk_subcategory_id = subcategory_id;
-    if (editing) {
-        store.dispatch("editProduct", newProduct).then(() => {
-            store.dispatch("getProducts");
-            closeModalForm();
-        });
-    } else {
-        store.dispatch("storeProduct", toAddProduct.value).then(() => {
-            store.dispatch("getProducts");
-            closeModalForm();
-        });
-    }
-}
-
-function deleteProduct(product) {
-    store.dispatch("deleteProduct", product).then(() => {
-        store.dispatch("getProducts");
-    });
+function closeModal(){
+  openModal.value = false;
 }
 </script>
+
+<style scoped></style>

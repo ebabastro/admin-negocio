@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full bg-slate-50 h-[100%] shadow-inner shadow-slate-500/50 p-2 overflow-auto flex flex-col items-center justify-between"
+        class="w-full bg-slate-50 h-[100%] shadow-inner shadow-slate-500/50 p-2 overflow-auto flex flex-col items-center relative"
     >
         <table
             class="w-full border-collapse border-2 border-slate-500 table text-sm"
@@ -10,7 +10,6 @@
                     <th class="border border-slate-600 w-10">ID</th>
                     <th class="border border-slate-600 w-56">Nombre</th>
                     <th class="border border-slate-600 w-20">Costo</th>
-                    <th class="border border-slate-600 w-4"></th>
                     <th class="border border-slate-600 w-4"></th>
                 </tr>
             </thead>
@@ -24,42 +23,39 @@
                         {{ product.id }}
                     </td>
                     <td class="border border-collapse border-slate-600">
-                        <p class="w-full">
-                            {{ product.name }}
-                        </p>
+                        {{ product.name }}
                     </td>
                     <td class="border border-collapse border-slate-600">
-                        <p class="w-full">
-                            {{ product.cost }}
-                        </p>
-                    </td>
-                    <td
-                        class="border border-collapse border-slate-600 text-orange-300 text-center text-sm"
-                    >
-                        <button @click="$emit('editModalForm', product)">
-                            <font-awesome-icon
-                                icon="fa-solid fa-pen-to-square"
-                            />
-                        </button>
+                        {{ product.cost }}
                     </td>
                     <td
                         class="border border-collapse border-slate-600 text-red-700 text-center text-sm"
                     >
-                        <button @click="$emit('deleteProduct', product)">
+                        <button>
                             <font-awesome-icon icon="fa-solid fa-trash" />
                         </button>
                     </td>
                 </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td
+                        class="border border-collapse border-slate-600 text-2xl text-center text-emerald-700"
+                    >
+                        <button>
+                            <font-awesome-icon icon="fa-solid fa-square-plus" />
+                        </button>
+                    </td>
+                    <td class="border border-collapse border-slate-600"></td>
+                    <td class="border border-collapse border-slate-600"></td>
+                    <td class="border border-collapse border-slate-600"></td>
+                </tr>
+            </tfoot>
         </table>
-        <slot></slot>
-        <button
-            v-show="subcategory_id != 0"
-            @click="$emit('showModalForm')"
-            class="bg-cyan-600 p-1 px-3 text-slate-50 font-semibold rounded shadow shadow-emerald-900/100 hover:bg-teal-500 transition-all duration-200"
-        >
-            <p>Agregar Producto</p>
-        </button>
+        <button @click="$emit('openModal')" class="p-1 px-3 text-slate-50 font-semibold bg-emerald-700 border-2 border-emerald-900 rounded shadow shadow-emerald-900/100">
+			Agregar Producto
+		</button>
+		<slot />
     </div>
 </template>
 
@@ -69,25 +65,12 @@ import { ref } from "vue";
 import { onBeforeMount } from "@vue/runtime-core";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-    faPenToSquare,
-    faSquarePlus,
-    faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSquarePlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faSquarePlus);
 library.add(faTrash);
-library.add(faPenToSquare);
 
-const creatingProduct = ref(false);
-
-const newProduct = ref({
-    name: "",
-    fk_subcategory_id: "",
-    cost: 0,
-});
-defineEmits(["showModalForm", "editModalForm", "deleteProduct"]);
-defineProps({
+const props = defineProps({
     products: { type: Array, required: true },
     subcategory_id: { type: Number, required: true, default: 0 },
 });

@@ -21,8 +21,8 @@ library.add(faHome)
 library.add(faHammer)
 
 const items = [
-    {name: 'Admin Products', icon: "fa-solid fa-box", to: { name: 'products'} ,},
-    {name: 'Economia Tests', icon: "fa-solid fa-sack-dollar", to: { name: 'almacenes'},},
+    {name: 'Almacenes', icon: "fa-solid fa-box", to: { name: 'almacenes'} ,},
+    // {name: 'Test', icon: "fa-solid fa-sack-dollar", to: { name: 'economia'},},
     {name: 'Administracion', icon: "fa-solid fa-hammer", to: { name: 'administration'},},
 ]
 </script>
